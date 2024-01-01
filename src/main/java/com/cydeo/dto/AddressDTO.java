@@ -1,10 +1,7 @@
 package com.cydeo.dto;
 
 import com.cydeo.enums.AddressType;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
+//@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AddressDTO {
 
     @JsonIgnore
@@ -38,6 +35,7 @@ public class AddressDTO {
     @JsonBackReference(value = "teacher-address-reference")
     private TeacherDTO teacher;
 
+    @JsonProperty("currentTemperature")
     private Integer currentTemperature;
 
 }

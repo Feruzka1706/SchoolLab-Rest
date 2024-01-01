@@ -1,6 +1,8 @@
 package com.cydeo.service.impl;
 
+import com.cydeo.client.WeatherStackClient;
 import com.cydeo.dto.AddressDTO;
+import com.cydeo.dto.WeatherStack;
 import com.cydeo.entity.Address;
 import com.cydeo.util.MapperUtil;
 import com.cydeo.repository.AddressRepository;
@@ -16,25 +18,44 @@ public class AddressServiceImpl implements AddressService {
 
     private final AddressRepository addressRepository;
     private final MapperUtil mapperUtil;
+    private final WeatherStackClient weatherStackClient;
 
-    public AddressServiceImpl(AddressRepository addressRepository, MapperUtil mapperUtil) {
+    public AddressServiceImpl(AddressRepository addressRepository,
+                              MapperUtil mapperUtil,
+                              WeatherStackClient weatherStackClient) {
         this.addressRepository = addressRepository;
         this.mapperUtil = mapperUtil;
+        this.weatherStackClient = weatherStackClient;
     }
 
-    @Override
     public List<AddressDTO> findAll() {
         return addressRepository.findAll()
                 .stream()
-                .map(address -> mapperUtil.convert(address, new AddressDTO()))
+                .map(address -> {
+                    AddressDTO addressDTO = mapperUtil.convert(address, new AddressDTO());
+                        WeatherStack weatherStack = weatherStackClient
+                                .getCurrentTemperatureOfRequestedState(addressDTO.getCity());
+                        addressDTO.setState(weatherStack.getLocation().getRegion());
+                        addressDTO.setCurrentTemperature(weatherStack.getCurrent().getTemperature());
+                    return addressDTO;
+                })
                 .collect(Collectors.toList());
+
     }
 
     @Override
     public AddressDTO findById(Long id) throws Exception {
         Address foundAddress = addressRepository.findById(id)
                 .orElseThrow(() -> new Exception("No Address Found!"));
-        return mapperUtil.convert(foundAddress, new AddressDTO());
+
+        AddressDTO addressDTO = mapperUtil.convert(foundAddress,new AddressDTO());
+
+        WeatherStack  weatherStack = weatherStackClient
+                .getCurrentTemperatureOfRequestedState(addressDTO.getCity());
+        addressDTO.setState(weatherStack.getLocation().getRegion());
+        addressDTO.setCurrentTemperature(weatherStack.getCurrent().getTemperature());
+
+        return addressDTO;
     }
 
     @Override
@@ -44,9 +65,7 @@ public class AddressServiceImpl implements AddressService {
                 .orElseThrow(() -> new Exception("No Address Found!"));
 
         Address addressToSave = mapperUtil.convert(addressDTO, new Address());
-
         addressRepository.save(addressToSave);
-
         return mapperUtil.convert(addressToSave, new AddressDTO());
 
     }

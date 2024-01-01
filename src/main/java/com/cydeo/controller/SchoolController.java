@@ -1,10 +1,7 @@
 package com.cydeo.controller;
 
-import com.cydeo.client.WeatherStackClient;
-import com.cydeo.dto.AddressDTO;
 import com.cydeo.dto.ResponseWrapper;
 import com.cydeo.dto.TeacherDTO;
-import com.cydeo.dto.WeatherStack;
 import com.cydeo.service.AddressService;
 import com.cydeo.service.ParentService;
 import com.cydeo.service.StudentService;
@@ -27,18 +24,14 @@ public class SchoolController {
     private final ParentService parentService;
     private final AddressService addressService;
 
-    private final WeatherStackClient weatherStackClient;
-
     public SchoolController(TeacherService teacherService,
                             StudentService studentService,
                             ParentService parentService,
-                            AddressService addressService,
-                            WeatherStackClient weatherStackClient) {
+                            AddressService addressService) {
         this.teacherService = teacherService;
         this.studentService = studentService;
         this.parentService = parentService;
         this.addressService = addressService;
-        this.weatherStackClient = weatherStackClient;
     }
 
 
@@ -93,15 +86,6 @@ public class SchoolController {
 
     @GetMapping("/address/{id}")
     public ResponseEntity<ResponseWrapper> getAddressById(@PathVariable("id") Long id ) throws Exception {
-
-        // Setting WeatherStack API key and state
-        String access_key = "3c02d6990d036aa4ac52769ad819d085";
-        AddressDTO addressDTO = addressService.findById(id);
-        WeatherStack weatherStack = weatherStackClient.getCurrentTemperatureOfRequestedState(access_key,addressDTO.getCity());
-
-        addressDTO.setState(weatherStack.getLocation().getRegion());
-        addressDTO.setCurrentTemperature(weatherStack.getCurrent().getTemperature());
-        addressService.update(addressDTO);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

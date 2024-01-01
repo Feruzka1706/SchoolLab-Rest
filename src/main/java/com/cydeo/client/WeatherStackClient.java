@@ -13,9 +13,8 @@ import java.util.List;
 @FeignClient(url = "http://api.weatherstack.com", name = "WeatherStack-Client")
 public interface WeatherStackClient {
 
-    @GetMapping("/current")
-    WeatherStack getCurrentTemperatureOfRequestedState(@RequestParam("access_key") String apiKey,
-                                                       @RequestParam("query") String state);
+    @GetMapping("/current?access_key=3c02d6990d036aa4ac52769ad819d085")
+    WeatherStack getCurrentTemperatureOfRequestedState(@RequestParam("query") String city);
 
 
 }

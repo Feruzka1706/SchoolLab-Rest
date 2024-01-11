@@ -36,4 +36,10 @@ public class TeacherServiceImpl implements TeacherService {
         return mapperUtil.convert(foundTeacher, new TeacherDTO());
     }
 
+    @Override
+    public TeacherDTO createTeacher(TeacherDTO teacherDTO) {
+        Teacher newTeacher = teacherRepository.save(mapperUtil.convert(teacherDTO, new Teacher()));
+        return mapperUtil.convert(newTeacher,new TeacherDTO());
+    }
+
 }

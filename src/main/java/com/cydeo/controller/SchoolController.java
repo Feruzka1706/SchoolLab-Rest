@@ -1,5 +1,6 @@
 package com.cydeo.controller;
 
+import com.cydeo.dto.AddressDTO;
 import com.cydeo.dto.ResponseWrapper;
 import com.cydeo.dto.TeacherDTO;
 import com.cydeo.service.AddressService;
@@ -8,11 +9,9 @@ import com.cydeo.service.StudentService;
 import com.cydeo.service.TeacherService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -111,6 +110,34 @@ public class SchoolController {
     Create an endpoint to update individual address information
     return updated address directly
      */
+
+    @PutMapping("/address/{id}")
+    public AddressDTO updateAddress(@PathVariable("id") Long id, @RequestBody AddressDTO addressDTO) throws Exception {
+        addressDTO.setId(id);
+
+       return addressService.update(addressDTO);
+    }
+
+     /*
+        create an endpoint for creating teacher
+        return Http status 201
+        custom header "teacherId","idCreated"
+        responseWrapper("Teacher is created",teacherInfo)
+     */
+
+    @PostMapping("/teachers")
+    public ResponseEntity<ResponseWrapper> createTeacher(@Valid @RequestBody TeacherDTO teacherDTO){
+        TeacherDTO teacher = teacherService.createTeacher(teacherDTO);
+
+        ResponseWrapper responseWrapper = new ResponseWrapper(true,"Teacher is created."
+                ,HttpStatus.CREATED.value(),teacher);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .header("teacherId",String.valueOf(teacher.getId()))
+                .body(responseWrapper);
+
+    }
+
 
 
 }

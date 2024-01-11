@@ -1,21 +1,16 @@
 
-package com.cydeo.dto;
+package com.cydeo.dto.weather;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.annotation.Generated;
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-import com.fasterxml.jackson.annotation.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "request",
@@ -23,7 +18,7 @@ import lombok.Setter;
     "current"
 })
 @Generated("jsonschema2pojo")
-public class WeatherStack {
+public class WeatherResponse {
 
     @JsonProperty("request")
     private Request request;
